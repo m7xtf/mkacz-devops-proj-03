@@ -1,11 +1,15 @@
 version: 2.1
 
-            
+
+defaults: &node-img
+  docker:
+    - image: circleci/node:13.8.0
+  resource_class: small
+
+
 jobs:
   build-frontend:
-    docker:
-      - image: circleci/node:13.8.0
-    resource_class: small
+    <<: *node-img
     steps:
       - checkout
       - restore_cache:
@@ -21,9 +25,7 @@ jobs:
           key: frontend-build
 
   build-backend:
-    docker:
-      - image: circleci/node:13.8.0
-    resource_class: small
+    <<: *node-img
     steps:
       - checkout
       - restore_cache:
@@ -38,7 +40,31 @@ jobs:
           paths: [backend/node_modules]
           key: backend-build
 
-
+  test-frontend:
+    <<: *node-img
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-build]
+      - run:
+          name: test front-end
+          command: |
+            cd frontend
+            npm install
+            npm run test
+                
+  test-backend:
+    <<: *node-img
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [backend-build]
+      - run:
+          name: test back-end
+          command: |
+            cd backend
+            npm install
+            npm run test
 
 
 workflows:
@@ -46,10 +72,10 @@ workflows:
     jobs:
       - build-frontend
       - build-backend
-        #              - test-frontend:
-        #requires: [build-frontend]
-        #      - test-backend:
-#          requires: [build-backend]
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
  #     - scan-backend:
   #        requires: [build-backend]
    #   - scan-frontend:
