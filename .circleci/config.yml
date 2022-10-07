@@ -151,7 +151,31 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      - destroy-environment 
+      - destroy-environment
+
+  configure-infrastructure:
+    docker:
+      - image: cimg/deploy:2022.09
+    resource_class: small
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "87:57:45:49:25:ce:58:2a:00:71:64:04:36:1c:0e:c9"
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            # Your code here
+            cat ~/project/.circleci/ansible/inventory.txt
+            exit 1
+      - run:
+          name: Configure server
+          command: |
+            # Your code here
+            exit 1
+      # Here's where you will add some code to rollback on failure      
 
 
 workflows:
@@ -175,8 +199,8 @@ workflows:
        #   filters:
         #    branches:
          #     only: [test-feature-branch]
-#      - configure-infrastructure:
- #         requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
   #    - run-migrations:
    #       requires: [configure-infrastructure]
     #  - deploy-frontend:
