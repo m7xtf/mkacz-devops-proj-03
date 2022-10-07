@@ -154,9 +154,10 @@ jobs:
       - destroy-environment
 
   configure-infrastructure:
-    docker:
-      - image: cimg/deploy:2022.09
-    resource_class: small
+ #   docker:
+  #    - image: cimg/deploy:2022.09
+   # resource_class: small
+    <<: *aws-img
     steps:
       - checkout
       - add_ssh_keys:
@@ -167,6 +168,11 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            yum install tar -y
+            yum install gzip -y
+            yum install python3 -y
+            yum install pip3 -y
+            pip3 install ansible
             # Your code here
             cat ~/project/.circleci/ansible/inventory.txt
             exit 1
