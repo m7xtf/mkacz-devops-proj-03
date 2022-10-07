@@ -163,8 +163,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "87:57:45:49:25:ce:58:2a:00:71:64:04:36:1c:0e:c9"
-      - attach_workspace:
-          at: ~/
+      
       - run:
           name: Install dependencies
           command: |
@@ -173,12 +172,15 @@ jobs:
             yum install python3 -y
             yum install pip3 -y
             pip3 install ansible
-            # Your code here
-            cat ~/project/.circleci/ansible/inventory.txt
-            exit 1
+            
+
+      - attach_workspace:
+          at: ~/
+
       - run:
           name: Configure server
           command: |
+            cat ~/project/.circleci/ansible/inventory.txt
             # Your code here
             exit 1
       # Here's where you will add some code to rollback on failure      
