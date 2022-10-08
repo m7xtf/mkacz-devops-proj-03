@@ -167,6 +167,7 @@ jobs:
             yum install gzip -y
             yum install python3 -y
             yum install python3-pip -y
+            yum install openssh-clients -y
             pip3 install ansible
       - attach_workspace:
           at: ~/
