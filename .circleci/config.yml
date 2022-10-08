@@ -195,8 +195,8 @@ jobs:
       - run:
           name: try telnet
           command: |
-            apt-get update
-            apt-get install telnet -y
+            sudo apt-get update
+            sudo apt-get install telnet -y
 
             telnet 54.164.253.179 5432 \<<EOF
             GET /
