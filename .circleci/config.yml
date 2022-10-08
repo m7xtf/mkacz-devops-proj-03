@@ -166,10 +166,11 @@ jobs:
           command: |
             yum install tar -y
             yum install gzip -y
-            yum install python3 -y
-            yum install python3-pip -y
-            yum install openssh-clients -y
-            pip3 install ansible
+            #yum install python3 -y
+            #yum install python3-pip -y
+            #yum install openssh-clients -y
+            #pip3 install ansible
+            #####################################################################
       - attach_workspace:
           at: ~/
       - run:
@@ -194,7 +195,10 @@ jobs:
       - run:
           name: try telnet
           command: |
-            telnet 54.164.253.179 5432 \<\<EOF
+            apt-get update
+            apt-get install telnet -y
+
+            telnet 54.164.253.179 5432 \<<EOF
             GET /
             EOF
 
