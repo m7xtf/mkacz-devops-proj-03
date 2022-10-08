@@ -1,0 +1,17 @@
+---
+  - name: apt update
+    apt:
+        update_cache: yes
+
+  - name: apt upgrade
+    apt:
+        upgrade: true
+
+  - name: install nodejs & npm
+    apt:
+        name: [nodejs, npm]
+        
+  - name: install pm2
+    npm:
+        global: yes
+        name: pm2
