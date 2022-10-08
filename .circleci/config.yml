@@ -187,19 +187,27 @@ jobs:
       - run:
           name: install aws cli
           command: |
-
-            ls /etc |grep -i ver
-
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install
+
+      - run:
+          name: try telnet
+          command: |
+            telnet 54.164.253.179 5432 <<EOF
+            GET /
+            EOF
+
 
       - run:
           name: Run migrations
           command: |
             cd ~/project/backend
             npm install
+            npm audit fix --audit-level=critical --force
             npm run migrations > migrations_dump.txt
+            cat migrations_dump.txt
+            
       - run:
           name: Send migration results to memstash
           command: |
