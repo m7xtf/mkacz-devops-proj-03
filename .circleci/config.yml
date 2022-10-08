@@ -127,19 +127,21 @@ jobs:
       - run:
           name: Ensure back-end infrastructure exists
           command: |
-            aws cloudformation deploy \
-              --template-file .circleci/files/backend.yml \
-              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-              --tags project=udapeople
+            #aws cloudformation deploy \
+             # --template-file .circleci/files/backend.yml \
+              #--stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              #--parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+              #--tags project=udapeople
+              ####################################################
       - run:
           name: Ensure front-end infrastructure exist
           command: |
-            aws cloudformation deploy \
-              --template-file .circleci/files/frontend.yml \
-              --tags project=udapeople \
-              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+            #aws cloudformation deploy \
+             # --template-file .circleci/files/frontend.yml \
+              #--tags project=udapeople \
+              #--stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              #--parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+              #####################################################
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -198,9 +200,9 @@ jobs:
             sudo apt-get update
             sudo apt-get install telnet -y
 
-            telnet 54.164.253.179 5432 \<<EOF
-            GET /
-            EOF
+            #telnet 54.164.253.179 5432 \<<EOF
+            #GET /
+            #EOF
 
 
       - run:
