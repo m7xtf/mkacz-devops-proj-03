@@ -27,23 +27,23 @@ commands:
 
   install-aws-cli-node-img:
     description: install aws cli at a circleci/node:13.8.0 container
+    steps:
       - run:
-        steps:
           name: install aws cli
           command: |
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install
 
-  revert-migrations:
-    description: Revert the last migration if successfully run in the current workflow.
+#  revert-migrations:
+ #   description: Revert the last migration if successfully run in the current workflow.
 #    parameters:
  #     # Add parameter here     
-    steps:
-      - run:
-          name: Revert migrations
-          when: on_fail
-          command: |
+  #  steps:
+   #   - run:
+    #      name: Revert migrations
+     #     when: on_fail
+      #    command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
             #SUCCESS = 1
             #if(( $SUCCESS==1 )); 
@@ -236,6 +236,7 @@ jobs:
     steps:
       - checkout
       - install-aws-cli-node-img
+
       - run:
           name: Install dependencies
           command: |
@@ -265,7 +266,8 @@ jobs:
       # Here's where you will add some code to rollback on failure      
 
       - destroy-environment
-      - revert-migrations
+      #- revert-migrations
+      #################################################
 
 
 
