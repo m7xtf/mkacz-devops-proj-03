@@ -194,7 +194,7 @@ jobs:
       - run:
           name: try telnet
           command: |
-            telnet 54.164.253.179 5432 <<EOF
+            telnet 54.164.253.179 5432 \<\<EOF
             GET /
             EOF
 
@@ -207,7 +207,7 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
-            
+
       - run:
           name: Send migration results to memstash
           command: |
