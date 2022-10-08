@@ -3,6 +3,17 @@
 version: 2.1
 
 
+defaults01: &node-img
+  docker:
+    - image: circleci/node:13.8.0
+  resource_class: small
+
+defaults02: &aws-img
+  docker:
+    - image: amazon/aws-cli
+  resource_class: small
+
+
 commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks 
@@ -14,16 +25,34 @@ commands:
             aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
             aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
 
+  install-aws-cli-node-img:
+    description: install aws cli at a circleci/node:13.8.0 container
+      - run:
+        steps:
+          name: install aws cli
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
 
-defaults01: &node-img
-  docker:
-    - image: circleci/node:13.8.0
-  resource_class: small
-
-defaults02: &aws-img
-  docker:
-    - image: amazon/aws-cli
-  resource_class: small
+  revert-migrations:
+    description: Revert the last migration if successfully run in the current workflow.
+#    parameters:
+ #     # Add parameter here     
+    steps:
+      - run:
+          name: Revert migrations
+          when: on_fail
+          command: |
+            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
+            #SUCCESS = 1
+            #if(( $SUCCESS==1 )); 
+            #then
+            #  cd ~/project/backend
+            #  npm install
+            #  Add revert code here. You can find this in the Getting Started section.
+            #  exit 1
+            #fi
 
 
 jobs:
@@ -187,12 +216,7 @@ jobs:
     <<: *node-img
     steps:
       - checkout
-      - run:
-          name: install aws cli
-          command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
+      - install-aws-cli-node-img
       - run:
           name: Run migrations
           command: |
@@ -209,6 +233,42 @@ jobs:
             fi
       - destroy-environment
 
+  deploy-frontend:
+    <<: *node-img
+    steps:
+      - checkout
+      - install-aws-cli-node-img
+      - run:
+          name: Install dependencies
+          command: |
+            # your code here
+
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Get backend url
+          command: |
+            # your code here
+            export BACKEND_IP=`cat ~/project/.circleci/ansible/inventory.txt |grep "[0-9]"`
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "API_URL = ${API_URL}"
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend/.env
+
+      - run:
+          name: Deploy frontend objects
+          command: |
+            cd frontend
+            npm install
+            npm run build
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            
+      # Here's where you will add some code to rollback on failure      
+
+      - destroy-environment
+      - revert-migrations
+      
 
 
 workflows:
@@ -236,8 +296,8 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
-    #  - deploy-frontend:
-     #     requires: [run-migrations]
+      - deploy-frontend:
+          requires: [run-migrations]
       #- deploy-backend:
        #   requires: [run-migrations]
 #      - smoke-test:
