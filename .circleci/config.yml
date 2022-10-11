@@ -239,12 +239,15 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            # your code here
             export BACKEND_IP=`cat ~/project/.circleci/ansible/inventory.txt |grep "[0-9]"`
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
             cat frontend/.env
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/frontend/.env
       - run:
           name: Deploy frontend objects
           command: |
