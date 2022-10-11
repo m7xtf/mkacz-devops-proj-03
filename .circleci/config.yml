@@ -15,16 +15,6 @@ defaults02: &aws-img
 
 
 commands:
-  destroy-environment:
-    description: Destroy back-end and front-end cloudformation stacks 
-    steps:
-      - run:
-          name: Destroy environments
-          when: on_fail
-          command: |
-            aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
-            aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
-
   install-aws-cli-node-img:
     description: install aws cli at a circleci/node:13.8.0 container
     steps:
@@ -35,6 +25,16 @@ commands:
             unzip awscliv2.zip
             sudo ./aws/install
 
+  destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks 
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
+            aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
+  
 #  revert-migrations:
  #   description: Revert the last migration if successfully run in the current workflow.
 #    parameters:
@@ -195,19 +195,17 @@ jobs:
           command: |
             yum install tar -y
             yum install gzip -y
-            #yum install python3 -y
-            #yum install python3-pip -y
-            #yum install openssh-clients -y
-            #pip3 install ansible
-            ##################################################
+            yum install python3 -y
+            yum install python3-pip -y
+            yum install openssh-clients -y
+            pip3 install ansible
       - attach_workspace:
           at: ~/
       - run:
           name: Configure server
           command: |
             cd ~/project/.circleci/ansible/
-            #ansible-playbook -i inventory.txt configure-server.yml
-            ###########################################################################
+            ansible-playbook -i inventory.txt configure-server.yml
       - destroy-environment
 
   run-migrations:
@@ -236,12 +234,6 @@ jobs:
     steps:
       - checkout
       - install-aws-cli-node-img
-
-      - run:
-          name: Install dependencies
-          command: |
-            # your code here
-
       - attach_workspace:
           at: ~/
       - run:
@@ -253,7 +245,6 @@ jobs:
             echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
             cat frontend/.env
-
       - run:
           name: Deploy frontend objects
           command: |
@@ -262,12 +253,11 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-            
-      # Here's where you will add some code to rollback on failure      
-
       - destroy-environment
       #- revert-migrations
       #################################################
+
+
 
 
 
