@@ -258,7 +258,7 @@ jobs:
       #################################################
 
   deploy-backend:
-  <<: *node-img
+    <<: *node-img
     steps:
       - checkout
       - add_ssh_keys:
