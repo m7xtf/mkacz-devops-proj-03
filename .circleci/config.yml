@@ -257,7 +257,46 @@ jobs:
       #- revert-migrations
       #################################################
 
+  deploy-backend:
+  <<: *node-img
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "87:57:45:49:25:ce:58:2a:00:71:64:04:36:1c:0e:c9"      
+      - attach_workspace:
+          at: ~/
+      
+      - run:
+          name: test #############
+          command: |
+            ls ~/project/frontend/
+            cat ~/project/frontend/.env
+      
+      - run:
+          name: Install dependencies
+          command: |
+            apt-get update
+            apt-get install python3
+            apt-get install python3-pip
+            pip3 install ansible
 
+      - run:
+          name: Deploy backend
+          command: |
+            cd backend
+            npm i
+            npm run build
+            cd ..
+            tar -C backend -czvf artifact.tar.gz .
+            cd .circleci/ansible
+            echo "Contents  of the inventory.txt file is -------"
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml
+
+
+
+      # Here's where you will add some code to rollback on failure  
 
 
 

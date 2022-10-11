@@ -1,0 +1,10 @@
+
+- name: upload the backend artifact
+  ansible.builtin.copy:
+    src: ../../artifact.tar.gz
+    dest: /home/ubuntu/artifact.tar.gz
+    owner: ubuntu
+    group: ubuntu
+    mode: '0644'
+
+
