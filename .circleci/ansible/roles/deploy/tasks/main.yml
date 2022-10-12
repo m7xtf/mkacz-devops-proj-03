@@ -7,4 +7,38 @@
     group: ubuntu
     mode: '0644'
 
+- name: create a directory for the app
+  ansible.builtin.file:
+    path: /home/ubuntu/app/
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: '0755'
+
+- name: unzip the artifact
+  ansible.builtin.unarchive:
+    src: /home/ubuntu/artifact.tar.gz
+    dest: /home/ubuntu/app/
+    copy: false
+    owner: ubuntu
+    group: ubuntu
+
+- name: npm install
+  become: false
+  ansible.builtin.shell:
+    chdir: /home/ubuntu/app/
+    cmd: npm install
+
+- name: pm2 stop default
+  become: false
+  ignore_errors: true
+  ansible.builtin.shell:
+    chdir: /home/ubuntu/app/
+    cmd: pm2 stop default
+
+- name: pm2 start npm
+  become: false
+  ansible.builtin.shell:
+    chdir: /home/ubuntu/app/
+    cmd: pm2 --log log.txt start npm -- start
 
