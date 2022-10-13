@@ -323,10 +323,20 @@ jobs:
           name: Get backend url
           command: |
             # your code here
+
       - run:
           name: Backend smoke test.
           command: |
-            # your code here
+            set -a
+            . ~/project/frontend/.env
+            echo ${API_URL}
+            if curl "${API_URL}/api/status" | grep "ok"
+            then
+              return 0
+            else
+              return 1
+            fi
+
 
       - run:
           name: Frontend smoke test.
