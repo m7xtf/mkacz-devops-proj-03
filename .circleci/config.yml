@@ -305,8 +305,10 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            # your code here
+            apk update
+            apk add curl
 
+      - install-aws-cli-node-img
 
       - attach_workspace:
           at: ~/
