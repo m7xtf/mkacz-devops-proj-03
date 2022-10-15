@@ -295,6 +295,11 @@ jobs:
     <<: *aws-img
     steps:
       - checkout
+      - run:
+          name: install tar & gzip
+          command: |
+            yum install tar -y
+            yum install gzip -y
       - attach_workspace:
           at: ~/
       - run:
