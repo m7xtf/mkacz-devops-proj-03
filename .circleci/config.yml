@@ -32,7 +32,6 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            export PATH=$PATH:/usr/local/bin/
             aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
             aws s3 rm "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
             aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
@@ -291,41 +290,13 @@ jobs:
             ansible-playbook -i inventory.txt deploy-backend.yml
       - destroy-environment
       - revert-migrations
-      
-
-
-      
-
 
   smoke-test:
-    docker:
-      - image: alpine:latest
-    resource_class: small
+    <<: *aws-img
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            apk update
-            apk add curl
-            apk add sudo
-
-      - install-aws-cli-node-img
-
       - attach_workspace:
           at: ~/
-      - run:
-          name: test #############
-          command: |
-            ls ~/project/frontend/
-            cat ~/project/frontend/.env
-
-
-      - run:
-          name: Get backend url
-          command: |
-            # your code here
-
       - run:
           name: Backend smoke test.
           command: |
@@ -339,8 +310,6 @@ jobs:
             else
               return 1
             fi
-
-
       - run:
           name: Frontend smoke test.
           command: |
@@ -353,7 +322,6 @@ jobs:
             else
               return 1
             fi
-
       - destroy-environment
       - revert-migrations
 
