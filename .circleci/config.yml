@@ -307,6 +307,7 @@ jobs:
           command: |
             apk update
             apk add curl
+            apk add sudo
 
       - install-aws-cli-node-img
 
