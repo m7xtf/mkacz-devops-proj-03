@@ -329,6 +329,7 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
+            sleep 60
             set -a
             . ~/project/frontend/.env
             echo ${API_URL}
