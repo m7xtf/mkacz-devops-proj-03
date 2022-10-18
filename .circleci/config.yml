@@ -289,15 +289,15 @@ jobs:
       - revert-migrations
 
   smoke-test:
-    <<: *aws-img
+    <<: *node-img
     steps:
       - checkout
       - install-aws-cli-node-img
-      - run:
-          name: install tar & gzip
-          command: |
-            yum install tar -y
-            yum install gzip -y
+#      - run:
+ #         name: install tar & gzip
+  #        command: |
+   #         yum install tar -y
+    #        yum install gzip -y
       - attach_workspace:
           at: ~/
       - run:
