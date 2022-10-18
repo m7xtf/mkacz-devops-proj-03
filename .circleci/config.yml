@@ -260,6 +260,7 @@ jobs:
     <<: *node-img
     steps:
       - checkout
+      - install-aws-cli-node-img
       - add_ssh_keys:
           fingerprints:
             - "ec:6d:a9:ee:0a:62:d8:0c:f0:71:2e:71:a9:c0:80:b3"
@@ -291,6 +292,7 @@ jobs:
     <<: *aws-img
     steps:
       - checkout
+      - install-aws-cli-node-img
       - run:
           name: install tar & gzip
           command: |
