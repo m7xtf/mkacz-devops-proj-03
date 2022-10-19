@@ -289,15 +289,10 @@ jobs:
       - revert-migrations
 
   smoke-test:
-    <<: *node-img
+    <<: *node-img # the reason to use a node img rather than a alpine img is that installation of AWS CLI (needed for rollbacks) fails at alpine
     steps:
       - checkout
       - install-aws-cli-node-img
-#      - run:
- #         name: install tar & gzip
-  #        command: |
-   #         yum install tar -y
-    #        yum install gzip -y
       - attach_workspace:
           at: ~/
       - run:
