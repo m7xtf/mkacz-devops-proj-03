@@ -338,7 +338,7 @@ jobs:
       - destroy-environment
       - revert-migrations
 
-cleanup:
+  cleanup:
     <<: *aws-img
     steps:
       - checkout
