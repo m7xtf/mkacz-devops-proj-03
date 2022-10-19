@@ -345,9 +345,8 @@ jobs:
       - run:
           name: Get old stack workflow id
           command: |
-            export OldWorkflowID=$(aws s3 ls|awk '{print $3}'|grep "^udapeople-[0-9a-z]*"|grep 25c401c -v|sed -e 's/\-/ /g'|awk '{print $2}')
+            export OldWorkflowID=$(aws s3 ls|awk '{print $3}'|grep "^udapeople-[0-9a-z]*"|grep ${CIRCLE_WORKFLOW_ID:0:7} -v|sed -e 's/\-/ /g'|awk '{print $2}')
             echo ${OldWorkflowID} > ~/project/.circleci/OldWorkflowID.txt
-            cat ~/project/.circleci/OldWorkflowID.txt
       - run:
           name: Remove old stacks and files
           command: |
