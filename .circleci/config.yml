@@ -347,9 +347,11 @@ jobs:
           command: |
             export OldWorkflowID=$(aws s3 ls|awk '{print $3}'|grep "^udapeople-[0-9a-z]*"|grep 25c401c -v|sed -e 's/\-/ /g'|awk '{print $2}')
             echo OldWorkflowID=${OldWorkflowID} > ~/project/.circleci/OldWorkflowID
+            cat ~/project/.circleci/OldWorkflowID
       - run:
           name: Remove old stacks and files
           command: |
+            cat ~/project/.circleci/OldWorkflowID
             set -a
             . ~/project/.circleci/OldWorkflowID
             aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
